@@ -21,7 +21,7 @@ user_data_schema = {
 
 user_data_input = {
     'name': input("Enter your name: "),
-    'age': int(input("Enter your age: ")),
+    'age': input("Enter your age: "),
     'time': input("Enter the time (YYYY-MM-DD HH:MM:SS) or press Enter for None: "),
     'is_student': input("Are you a student? (True/False): ").lower() == 'true',
     'extra_field': input("Enter an extra field (will be ignored by validation): ")
