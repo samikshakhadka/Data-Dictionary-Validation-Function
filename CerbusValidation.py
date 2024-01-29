@@ -10,53 +10,28 @@ def date_time_validate(field, value , error):
 
 
 
-# Cerberus schema for validation
-
 user_data_schema = {
     'name': {'type': 'string', 'minlength': 3, 'maxlength': 50},
     'age': {'type': 'integer', 'min': 18, 'max': 99},
     'time': {'validator': date_time_validate, 'nullable': True},
     'is_student': {'type': 'boolean'},
-
-
 }
 
 
-user_data_input = {
-    'name': input("Enter your name: "),
-    'age': input("Enter your age: "),
-    'time': input("Enter the time (YYYY-MM-DD HH:MM:SS) or press Enter for None: "),
-    'is_student': input("Are you a student? (True/False): ").lower() == 'true',
-    'extra_field': input("Enter an extra field (will be ignored by validation): ")
-
-}
-
-
-# allow_unknown=True : any additional field will be ignored
-validator = Validator(user_data_schema, allow_unknown=True)
-if validator.validate(user_data_input):
-    print("Data is valid.")
-
-
-
-# Example usage:
-
-# User input for data
 user_data_input = {
     'name': input("Enter your name: "),
     'age': int(input("Enter your age: ")),
     'time': input("Enter the time (YYYY-MM-DD HH:MM:SS) or press Enter for None: "),
-    'is_student': input("Are you a student? (True/False): ").lower() == 'true'
+    'is_student': input("Are you a student? (True/False): ").lower() == 'true',
+    'extra_field': input("Enter an extra field (will be ignored by validation): ")
 }
 
-# Perform validation using Cerberus
+
 validator = Validator(user_data_schema)
+# allow_unknown=True : any additional field will be ignored
+validator = Validator(user_data_schema, allow_unknown=True)
 if validator.validate(user_data_input):
     print("Data is valid.")
-    # If 'time' is provided, convert it to datetime
-    if 'time' in user_data_input and user_data_input['time']:
-        user_data_input['time'] = datetime.strptime(user_data_input['time'], "%Y-%m-%d %H:%M:%S")
-    print("Processed user data:", user_data_input)
 
 else:
     print("Data validation failed. Errors:", validator.errors)
