@@ -1,59 +1,32 @@
+def validate_field(field_value, rules):
+    if 'type' in rules and not isinstance(field_value, rules['type']):
+        return False
+    if 'min_length' in rules and len(str(field_value)) < rules['min_length']:
+        return False
+    if 'max_length' in rules and len(str(field_value)) > rules['max_length']:
+        return False
+    if 'min_value' in rules and field_value < rules['min_value']:
+        return False
+    if 'max_value' in rules and field_value > rules['max_value']:
+        return False
+    return True
+
 def validate_dictionary(data, validation_rules):
-    eligible_students = []
+    results = []
 
     for user_data in data:
-        is_valid = True
-        current_student = {}
+        is_valid = all(
+            validate_field(user_data.get(field), rules)
+            for field, rules in validation_rules.items()
+        )
+        results.append(is_valid)
 
-        for field, rules in validation_rules.items():
-            if field not in user_data:
-                is_valid = False
-                print(f"Error: Field '{field}' not present in the data.")
-                break
-
-            field_value = user_data[field]
-
-            if 'type' in rules and not isinstance(field_value, rules['type']):
-                print(f"Error: Field '{field}' must be of type {rules['type']}.")
-                is_valid = False
-                break
-
-            if 'min_length' in rules and len(field_value) < rules['min_length']:
-                print(f"Error: Field '{field}' must have a minimum length of {rules['min_length']}.")
-                is_valid = False
-                break
-
-            if 'max_length' in rules and len(field_value) > rules['max_length']:
-                print(f"Error: Field '{field}' must have a maximum length of {rules['max_length']}.")
-                is_valid = False
-                break
-
-            if 'min_value' in rules and field_value < rules['min_value']:
-                print(f"Error: Field '{field}' must have a minimum value of {rules['min_value']}.")
-                is_valid = False
-                break
-
-            if 'max_value' in rules and field_value > rules['max_value']:
-                print(f"Error: Field '{field}' must have a maximum value of {rules['max_value']}.")
-                is_valid = False
-                break
-
-            if field == 'submit_assignment' and field_value is not True:
-                print(f"Error: Field '{field}' must be 'True' for eligibility.")
-                is_valid = False
-                break
-
-            current_student[field] = field_value
-
-        if is_valid:
-            eligible_students.append(current_student)
-
-    return eligible_students
+    return results
 
 user_data_batch = [
-    {'name': 'Sami', 'age': 10, 'submit_assignment': False},
-    {'name': 'Rajan', 'age': 25, 'submit_assignment': False},
-    {'name': 'Rohit', 'age': 20, 'submit_assignment': True},
+    {'name': 'sami', 'age': 22, 'submit_assignment': False},
+    {'age': 22, 'name': 'ramu', 'submit_assignment': True},
+    {'name': 100, 'age': 'hahano', 'submit_assignment': False}
 ]
 
 rules = {
@@ -62,7 +35,7 @@ rules = {
     'submit_assignment': {'type': bool},
 }
 
-result = validate_dictionary(user_data_batch, rules)
+results = validate_dictionary(user_data_batch, rules)
 
-for student in result:
-    print(f"{student['name']} ({student['age']} years old) is eligible for the exam.")
+for result in results:
+    print(result)
